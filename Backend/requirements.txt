@@ -64,6 +64,7 @@ pypdf==5.4.0
 python-dateutil==2.9.0.post0
 python-dotenv==1.1.0
 python-multipart==0.0.20
+py-solc-x==1.1.1
 PyYAML==6.0.2
 regex==2024.11.6
 requests==2.32.3
@@ -94,6 +95,7 @@ tzdata==2025.2
 urllib3==2.4.0
 uvicorn==0.34.1
 watchfiles==1.0.5
+web3>=6.11.0
 websockets==15.0.1
 yarl==1.20.0
 zstandard==0.23.0
