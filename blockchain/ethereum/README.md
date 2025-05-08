@@ -1,7 +1,7 @@
 ## ⛓️ Ethereum (Ganache) Setup
 
 ```bash
-ganache
+ganache-cli --db ./ganache-db
 ```
 
 In another terminal:
