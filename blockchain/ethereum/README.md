@@ -7,7 +7,7 @@ ganache-cli --db ./ganache-db
 In another terminal:
 ```bash
 cd blockchain/ethereum
-python
+python3
 >>> from solcx import install_solc
 >>> install_solc("0.8.0")
 >>> exit()
