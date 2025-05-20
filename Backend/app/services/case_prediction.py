@@ -14,9 +14,17 @@ import asyncio
 from agents.extractor import process_raw_text
 from services.load_pdf import load_pdf_pages
 
-nltk.download('punkt')
-nltk.download('stopwords')
-nltk.download('wordnet')
+def ensure_nltk_resources():
+    resources = ['punkt', 'stopwords', 'wordnet']
+    
+    for resource in resources:
+        try:
+            nltk.data.find(f'tokenizers/{resource}' if resource == 'punkt' 
+                           else f'corpora/{resource}')
+            print(f"NLTK resource '{resource}' already downloaded.")
+        except LookupError:
+            print(f"Downloading NLTK resource '{resource}'...")
+            nltk.download(resource, quiet=True)
 
 
 def preprocess_text(text, stopwords=None):
@@ -48,9 +56,11 @@ def setup_one_hot_encoders():
 
 def predict_from_raw_text(raw_text: str):
     try:
-        vectorizer = joblib.load("app/assets/vectorizer.pkl")
-        lda_model = joblib.load("app/assets/lda_model.pkl")
-        model = joblib.load("app/assets/case_prediction_model_1.pkl")
+        ensure_nltk_resources()
+
+        vectorizer = joblib.load("app/assets/ml_models/vectorizer.pkl")
+        lda_model = joblib.load("app/assets/ml_models/lda_model.pkl")
+        model = joblib.load("app/assets/ml_models/case_prediction_model.pkl")
         dt_encoder, disp_encoder = setup_one_hot_encoders()
 
         features = asyncio.run(process_raw_text(raw_text))
