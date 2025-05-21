@@ -115,6 +115,13 @@ const Login = () => {
             onChange={handleChange}
             disabled={loading}
           />
+
+          {error && (
+            <Typography color="error" variant="body2" sx={{ mt: 2, textAlign: 'center' }}>
+              {error}
+            </Typography>
+          )}
+
           <Button
             type="submit"
             fullWidth

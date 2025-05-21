@@ -12,6 +12,7 @@ def extract_text_from_upload(file: UploadFile) -> str:
     """Extract text from in-memory UploadFile using PyMuPDF."""
     # Read file contents into memory
     file_bytes = file.file.read()
+    print("hi")
     
     # Open with fitz from memory
     with fitz.open(stream=file_bytes, filetype="pdf") as doc:

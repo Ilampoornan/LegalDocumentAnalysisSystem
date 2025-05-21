@@ -8,7 +8,7 @@ import {
 } from '@mui/material';
 import { 
   Send, Mic, MicOff, AttachFile, Person, SmartToy, 
-  History,  Delete,  Close, ChatBubble
+  History,  Delete,  Close, ChatBubble, Info, Error
 } from '@mui/icons-material';
 import { useChatContext } from '../context/ChatContext';
 
@@ -229,14 +229,16 @@ const ChatInterface = () => {
                 {!msg.isUser && (
                   <Avatar
                     sx={{
-                      bgcolor: 'primary.dark',
+                      bgcolor: msg.isSystem ? 'info.dark' : msg.isError ? 'error.dark' : 'primary.dark',
                       width: 38,
                       height: 38,
                       mr: 1.5,
                       mt: 0.5,
                     }}
                   >
-                    <SmartToy fontSize="small" />
+                    {msg.isSystem ? <Info fontSize="small" /> : 
+                    msg.isError ? <Error fontSize="small" /> : 
+                    <SmartToy fontSize="small" />}
                   </Avatar>
                 )}
                 
@@ -247,8 +249,12 @@ const ChatInterface = () => {
                     p: 2,
                     backgroundColor: msg.isUser 
                       ? 'primary.dark' 
-                      : 'background.subtle',
-                    color: msg.isUser ? 'white' : 'text.primary',
+                      : msg.isSystem 
+                        ? 'info.dark' 
+                        : msg.isError 
+                          ? 'error.dark' 
+                          : 'background.subtle',
+                    color: (msg.isUser || msg.isSystem || msg.isError) ? 'white' : 'text.primary',
                     borderRadius: 3,
                     border: msg.isUser ? 'none' : '1px solid',
                     borderColor: msg.isUser ? 'transparent' : 'background.subtle',
@@ -260,7 +266,7 @@ const ChatInterface = () => {
                   <Typography variant="caption" sx={{ 
                     mt: 1.5, 
                     display: 'block',
-                    color: msg.isUser ? 'rgba(255,255,255,0.7)' : 'text.secondary',
+                    color: (msg.isUser || msg.isSystem || msg.isError) ? 'rgba(255,255,255,0.7)' : 'text.secondary',
                     fontSize: '0.7rem'
                   }}>
                     {new Date(msg.timestamp).toLocaleTimeString()}
