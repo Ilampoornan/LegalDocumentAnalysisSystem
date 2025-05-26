@@ -80,7 +80,7 @@ document_chain = create_stuff_documents_chain(llm=llm, prompt=rag_prompt)
 # }) | document_chain
 
 general_prompt = ChatPromptTemplate.from_messages([
-    ("system", "You are a friendly legal assistant. Help the user using your general knowledge."),
+    ("system", "You are a friendly legal assistant your name is legal query bot developed by group G of CSE 22. Help the user using your general knowledge."),
     MessagesPlaceholder(variable_name="chat_history"),
     ("human", "{question}")
 ])

@@ -1,232 +1,45 @@
 import React, { useState } from "react";
+import {
+  Box,
+  Container,
+  Typography,
+  Paper,
+  Tabs,
+  Tab,
+  Button,
+  TextField,
+  CircularProgress,
+  Alert,
+  List,
+  ListItem,
+  ListItemText,
+  Divider,
+  Card,
+  CardContent,
+  Grid,
+  Chip,
+  IconButton,
+  useTheme
+} from "@mui/material";
+import {
+  CloudUpload,
+  Description,
+  Delete,
+  Search,
+  ArticleOutlined,
+  ErrorOutline,
+  CheckCircleOutline,
+  WarningAmber
+} from "@mui/icons-material";
 
 const DocumentAnalysis = () => {
+  const theme = useTheme();
   const [file, setFile] = useState(null);
   const [text, setText] = useState("");
   const [result, setResult] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-  const [activeTab, setActiveTab] = useState("upload");
-
-  // CSS Styles
-  const styles = {
-   app: {
-  backgroundColor: "#1a1a1a", // deep charcoal gray
-  color: "#e5e7eb",           // light gray text
-  fontFamily: "'Segoe UI', 'Roboto', sans-serif",
-  minHeight: "100vh",
-  padding: "20px",
-},
-    header: {
-      textAlign: "center",
-      marginBottom: "2rem",
-    },
-    headerTitle: {
-      fontSize: "2.2rem",
-      color: "#4a90e2",
-      margin: "0 0 10px 0",
-    },
-    headerSubtitle: {
-      fontSize: "1.1rem",
-      color: "#95a5a6",
-      margin: 0,
-    },
-   main: {
-  backgroundColor: "#1f1f1f",        // dark base
-  borderRadius: "12px",
-  boxShadow: "0 4px 20px rgba(0, 0, 0, 0.3)",
-  overflow: "hidden",
-  border: "1px solid #2a2a2a",
-},
-    tabContainer: {
-      display: "flex",
-      borderBottom: "1px solid #e0e0e0",
-    },
-    tab: {
-      padding: "15px 25px",
-      cursor: "pointer",
-      fontWeight: 500,
-      transition: "all 0.3s ease",
-    },
-    activeTab: {
-      backgroundColor: "#f8f9fa",
-      borderBottom: "3px solid #3f51b5",
-      color: "#3f51b5",
-    },
-    contentContainer: {
-      padding: "30px",
-    },
-    fileUploadContainer: {
-      display: "flex",
-      justifyContent: "center",
-      alignItems: "center",
-      flexDirection: "column",
-      minHeight: "400px",
-      borderRadius: "16px",
-      padding: "40px",
-    },
-    fileInputWrapper: {
-      width: "100%",
-      maxWidth: "500px",
-    },
-    fileInput: {
-      display: "none",
-    },
-    fileInputLabel: {
-      display: "flex",
-      flexDirection: "column",
-      alignItems: "center",
-      justifyContent: "center",
-      padding: "60px",
-      backgroundColor: "rgba(0, 0, 0)",
-      backdropFilter: "blur(10px)",
-      color: "#d0d4d8",
-      border: "2px dashed #7f8c8d",
-      borderRadius: "10px",
-      fontSize: "1.1rem",
-      fontWeight: 500,
-      transition: "all 0.3s ease",
-      boxShadow: "0 8px 24px rgba(0,0,0,0.2)",
-      cursor: "pointer",
-    },
-    fileInputLabelHover: {
-      borderColor: "#3498db",
-      backgroundColor: "#2c3e50",
-    },
-    textInputContainer: {
-      width: "100%",
-      maxWidth: "1000px",
-      margin: "0 auto",
-    },
-    textInput: {
-      width: "100%",
-      padding: "15px",
-      borderRadius: "5px",
-      fontSize: "1rem",
-      fontFamily: "inherit",
-      resize: "vertical",
-      backgroundColor: "#121212",
-  color: "#e5e7eb",
-  border: "1px solid #2f2f2f",
-    },
-    analyzeButton: {
-      backgroundColor: "#3f51b5",
-      color: "white",
-      padding: "12px 25px",
-      borderRadius: "5px",
-      border: "none",
-      fontSize: "1rem",
-      fontWeight: "500",
-      cursor: "pointer",
-      transition: "background-color 0.3s ease",
-      marginTop: "20px",
-      width: "200px",
-    },
-    analyzeButtonHover: {
-      backgroundColor: "#303f9f",
-    },
-    analyzeButtonDisabled: {
-      backgroundColor: "#bdbdbd",
-      cursor: "not-allowed",
-    },
-    errorMessage: {
-      backgroundColor: "#ffebee",
-      color: "#c62828",
-      padding: "10px 15px",
-      borderRadius: "5px",
-      marginTop: "20px",
-      fontSize: "0.9rem",
-    },
-    loading: {
-      textAlign: "center",
-      padding: "30px",
-      color: "#666",
-      fontSize: "1.1rem",
-    },
-    resultsContainer: {
-      backgroundColor: "#0c1b2a",
-      padding: "30px",
-      boxShadow: "0 6px 18px rgba(0, 0, 0, 0.4)",
-      color: "#e3e9f0",
-      fontSize: "1rem",
-      marginTop: "40px",
-      lineHeight: "1.6",
-      border: "1px solid #1c2e44",
-    },
-    resultSection: {
-      marginBottom: "25px",
-    },
-    resultSectionTitle: {
-      color: "#ffffff",
-      fontSize: "1.5rem",
-      marginBottom: "20px",
-      borderBottom: "1px solid rgba(255, 255, 255, 0.1)",
-      paddingBottom: "10px",
-    },
-    resultSectionMainTitle: {
-      fontSize: "2rem",
-      fontWeight: "700",
-      color: "#ffffff",
-      textAlign: "center",
-      marginBottom: "30px",
-      letterSpacing: "0.5px",
-      borderBottom: "2px solid rgba(255, 255, 255, 0.15)",
-      paddingBottom: "12px",
-      textTransform: "uppercase",
-      fontFamily: "'Segoe UI', 'Helvetica Neue', sans-serif",
-    },
-    uploadPreview: {
-      display: "flex",
-      alignItems: "center",
-      marginTop: "20px",
-      gap: "12px",
-      backgroundColor: "rgba(255, 255, 255, 0.05)",
-      padding: "12px 16px",
-      border: "2px solid rgba(0, 0, 0,0.1)",
-      color: "#e0e3e7",
-    },
-
-    uploadIcon: {
-      width: "40px",
-      height: "40px",
-    },
-
-    uploadFileName: {
-      fontSize: "0.95rem",
-      color: "#a0a7ad",
-    },
-    list: {
-      paddingLeft: "20px",
-      marginTop: "10px",
-    },
-    listItem: {
-      marginBottom: "5px",
-    },
-    partiesList: {
-      listStyleType: "none",
-      padding: 0,
-    },
-    partyItem: {
-      backgroundColor: "#f5f5f5",
-      padding: "15px",
-      borderRadius: "5px",
-      marginBottom: "15px",
-    },
-    obligations: {
-      marginTop: "10px",
-    },
-    rights: {
-      marginTop: "10px",
-    },
-    footer: {
-      textAlign: "center",
-      padding: "20px",
-      marginTop: "40px",
-      color: "#7f8c8d",
-      fontSize: "0.9rem",
-      borderTop: "1px solid #ecf0f1",
-    },
-  };
+  const [activeTab, setActiveTab] = useState(0);
 
   const handleFileChange = (e) => {
     const selectedFile = e.target.files[0];
@@ -311,8 +124,8 @@ const DocumentAnalysis = () => {
     }
   };
 
-  const handleTabChange = (tab) => {
-    setActiveTab(tab);
+  const handleTabChange = (event, newValue) => {
+    setActiveTab(newValue);
     setResult(null);
     setError("");
   };
@@ -353,328 +166,399 @@ const DocumentAnalysis = () => {
     }
 
     return (
-      <div style={styles.resultsContainer}>
-        <h2 style={styles.resultSectionMainTitle}>Analysis Results</h2>
+      <Box sx={{ mt: 5 }}>
+        <Paper elevation={0} sx={{ p: 3, bgcolor: 'background.paper', border: '1px solid', borderColor: 'background.subtle' }}>
+          <Typography variant="h4" component="h2" sx={{ mb: 4, textAlign: 'center', fontWeight: 600 }}>
+            Analysis Results
+          </Typography>
 
-        <div style={styles.resultSection}>
-          <h3 style={styles.resultSectionTitle}>Document Statistics</h3>
-          <p>Text Length: {analysis.text_length} characters</p>
-          <p>Sentence Count: {analysis.sentence_count}</p>
-        </div>
+          <Card sx={{ mb: 4, bgcolor: 'background.subtle' }}>
+            <CardContent>
+              <Typography variant="h6" sx={{ mb: 2 }}>
+                Document Statistics
+              </Typography>
+              <Grid container spacing={2}>
+                <Grid item xs={6}>
+                  <Typography variant="body2">
+                    Text Length: {analysis.text_length} characters
+                  </Typography>
+                </Grid>
+                <Grid item xs={6}>
+                  <Typography variant="body2">
+                    Sentence Count: {analysis.sentence_count}
+                  </Typography>
+                </Grid>
+              </Grid>
+            </CardContent>
+          </Card>
 
-        <div style={styles.resultSection}>
-          <h3 style={styles.resultSectionTitle}>Legal Terms Found</h3>
-          {analysis.legal_terms_found &&
-          analysis.legal_terms_found.length > 0 ? (
-            <ul style={styles.list}>
-              {analysis.legal_terms_found.map((term, index) => (
-                <li key={index} style={styles.listItem}>
-                  {term}
-                </li>
-              ))}
-            </ul>
-          ) : (
-            <p>No specific legal terms identified.</p>
-          )}
-        </div>
+          <Card sx={{ mb: 4, bgcolor: 'background.subtle' }}>
+            <CardContent>
+              <Typography variant="h6" sx={{ mb: 2 }}>
+                Legal Terms Found
+              </Typography>
+              {analysis.legal_terms_found && analysis.legal_terms_found.length > 0 ? (
+                <Grid container spacing={1}>
+                  {analysis.legal_terms_found.map((term, index) => (
+                    <Grid item key={index}>
+                      <Chip 
+                        label={term} 
+                        color="primary" 
+                        variant="outlined" 
+                        size="small"
+                      />
+                    </Grid>
+                  ))}
+                </Grid>
+              ) : (
+                <Typography variant="body2" color="text.secondary">
+                  No specific legal terms identified.
+                </Typography>
+              )}
+            </CardContent>
+          </Card>
 
-        <div style={styles.resultSection}>
-          <h3 style={styles.resultSectionTitle}>Entities Detected</h3>
-          {analysis.entities && analysis.entities.length > 0 ? (
-            <ul style={styles.list}>
-              {analysis.entities.slice(0, 15).map((entity, index) => (
-                <li key={index} style={styles.listItem}>
-                  <strong>{entity.text}</strong> ({entity.type})
-                </li>
-              ))}
-            </ul>
-          ) : (
-            <p>No entities detected.</p>
-          )}
-        </div>
+          <Card sx={{ mb: 4, bgcolor: 'background.subtle' }}>
+            <CardContent>
+              <Typography variant="h6" sx={{ mb: 2 }}>
+                Entities Detected
+              </Typography>
+              {analysis.entities && analysis.entities.length > 0 ? (
+                <List dense>
+                  {analysis.entities.slice(0, 15).map((entity, index) => (
+                    <ListItem key={index}>
+                      <ListItemText
+                        primary={entity.text}
+                        secondary={entity.type}
+                      />
+                    </ListItem>
+                  ))}
+                </List>
+              ) : (
+                <Typography variant="body2" color="text.secondary">
+                  No entities detected.
+                </Typography>
+              )}
+            </CardContent>
+          </Card>
+          
+          <Card sx={{ mb: 4, bgcolor: 'background.subtle' }}>
+            <CardContent>
+              <Typography variant="h6" sx={{ mb: 2 }}>
+                Key Phrases
+              </Typography>
+              {analysis.key_phrases && analysis.key_phrases.length > 0 ? (
+                <List dense>
+                  {analysis.key_phrases.map((phrase, index) => (
+                    <ListItem key={index}>
+                      <ListItemText primary={phrase} />
+                    </ListItem>
+                  ))}
+                </List>
+              ) : (
+                <Typography variant="body2" color="text.secondary">
+                  No key phrases identified.
+                </Typography>
+              )}
+            </CardContent>
+          </Card>
+          
+          <Card sx={{ bgcolor: 'background.subtle' }}>
+            <CardContent>
+              <Typography variant="h6" sx={{ mb: 2 }}>
+                Summary
+              </Typography>
+              {parsedSummary ? (
+                <Box>
+                  <Typography variant="body2" paragraph>
+                    {parsedSummary.summary}
+                  </Typography>
 
-        <div style={styles.resultSection}>
-          <h3 style={styles.resultSectionTitle}>Key Phrases</h3>
-          {analysis.key_phrases && analysis.key_phrases.length > 0 ? (
-            <ul style={styles.list}>
-              {analysis.key_phrases.map((phrase, index) => (
-                <li key={index} style={styles.listItem}>
-                  {phrase}
-                </li>
-              ))}
-            </ul>
-          ) : (
-            <p>No key phrases identified.</p>
-          )}
-        </div>
-
-        <div style={styles.resultSection}>
-          <h3 style={styles.resultSectionTitle}>Summary</h3>
-          {parsedSummary ? (
-            <div>
-              <p>{parsedSummary.summary}</p>
-
-              <div style={{ marginTop: "20px" }}>
-                <h4 style={{ fontSize: "1.1rem", color: "#34495e" }}>
-                  Key Clauses:
-                </h4>
-                {Array.isArray(parsedSummary.key_clauses) &&
-                parsedSummary.key_clauses.length > 0 ? (
-                  <ul style={styles.list}>
-                    {parsedSummary.key_clauses.map((clause, index) => (
-                      <li key={index} style={styles.listItem}>
-                        {clause}
-                      </li>
-                    ))}
-                  </ul>
-                ) : (
-                  <p>No key clauses identified.</p>
-                )}
-              </div>
-
-              <div style={{ marginTop: "20px" }}>
-                <h4 style={{ fontSize: "1.1rem", color: "#34495e" }}>
-                  Potential Issues:
-                </h4>
-                {Array.isArray(parsedSummary.potential_issues) &&
-                parsedSummary.potential_issues.length > 0 ? (
-                  <ul style={styles.list}>
-                    {parsedSummary.potential_issues.map((issue, index) => (
-                      <li key={index} style={styles.listItem}>
-                        {issue}
-                      </li>
-                    ))}
-                  </ul>
-                ) : (
-                  <p>No potential issues identified.</p>
-                )}
-              </div>
-
-              <div style={{ marginTop: "20px" }}>
-                <h4 style={{ fontSize: "1.1rem", color: "#34495e" }}>
-                  Parties and Obligations:
-                </h4>
-                {Array.isArray(parsedSummary.parties_and_obligations) &&
-                parsedSummary.parties_and_obligations.length > 0 ? (
-                  <ul style={styles.partiesList}>
-                    {parsedSummary.parties_and_obligations.map(
-                      (party, index) => (
-                        <li key={index} style={styles.partyItem}>
-                          <strong>{party.party}</strong>
-                          {party.obligations &&
-                            party.obligations.length > 0 && (
-                              <div style={styles.obligations}>
-                                <h5
-                                  style={{
-                                    fontSize: "1rem",
-                                    marginBottom: "5px",
-                                  }}
-                                >
-                                  Obligations:
-                                </h5>
-                                <ul style={styles.list}>
-                                  {party.obligations.map((obligation, idx) => (
-                                    <li key={idx} style={styles.listItem}>
-                                      {obligation}
-                                    </li>
-                                  ))}
-                                </ul>
-                              </div>
-                            )}
-                          {party.rights && party.rights.length > 0 && (
-                            <div style={styles.rights}>
-                              <h5
-                                style={{
-                                  fontSize: "1rem",
-                                  marginBottom: "5px",
-                                }}
-                              >
-                                Rights:
-                              </h5>
-                              <ul style={styles.list}>
-                                {party.rights.map((right, idx) => (
-                                  <li key={idx} style={styles.listItem}>
-                                    {right}
-                                  </li>
-                                ))}
-                              </ul>
-                            </div>
-                          )}
-                        </li>
-                      )
+                  <Box sx={{ mt: 3 }}>
+                    <Typography variant="subtitle1" fontWeight={500}>
+                      Key Clauses:
+                    </Typography>
+                    {Array.isArray(parsedSummary.key_clauses) && parsedSummary.key_clauses.length > 0 ? (
+                      <List dense>
+                        {parsedSummary.key_clauses.map((clause, index) => (
+                          <ListItem key={index}>
+                            <ListItemText primary={clause} />
+                          </ListItem>
+                        ))}
+                      </List>
+                    ) : (
+                      <Typography variant="body2" color="text.secondary">
+                        No key clauses identified.
+                      </Typography>
                     )}
-                  </ul>
-                ) : (
-                  <p>No parties or obligations identified.</p>
-                )}
-              </div>
+                  </Box>
 
-              <p style={{ marginTop: "20px" }}>
-                <strong>Processing Time:</strong>{" "}
-                {parsedSummary.processing_time || "N/A"}
-              </p>
-            </div>
-          ) : (
-            <p>No summary available.</p>
-          )}
-        </div>
-      </div>
+                  <Box sx={{ mt: 3 }}>
+                    <Typography variant="subtitle1" fontWeight={500}>
+                      Potential Issues:
+                    </Typography>
+                    {Array.isArray(parsedSummary.potential_issues) && parsedSummary.potential_issues.length > 0 ? (
+                      <List dense>
+                        {parsedSummary.potential_issues.map((issue, index) => (
+                          <ListItem key={index}>
+                            <ListItemText 
+                              primary={
+                                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                                  <WarningAmber color="warning" fontSize="small" />
+                                  <Typography variant="body2">{issue}</Typography>
+                                </Box>
+                              } 
+                            />
+                          </ListItem>
+                        ))}
+                      </List>
+                    ) : (
+                      <Typography variant="body2" color="text.secondary">
+                        No potential issues identified.
+                      </Typography>
+                    )}
+                  </Box>
+
+                  <Box sx={{ mt: 3 }}>
+                    <Typography variant="subtitle1" fontWeight={500}>
+                      Parties and Obligations:
+                    </Typography>
+                    {Array.isArray(parsedSummary.parties_and_obligations) && parsedSummary.parties_and_obligations.length > 0 ? (
+                      parsedSummary.parties_and_obligations.map((party, index) => (
+                        <Card key={index} variant="outlined" sx={{ mb: 2, mt: 1 }}>
+                          <CardContent>
+                            <Typography variant="subtitle2" fontWeight={600}>
+                              {party.party}
+                            </Typography>
+                            
+                            {party.obligations && party.obligations.length > 0 && (
+                              <Box sx={{ mt: 1 }}>
+                                <Typography variant="body2" fontWeight={500}>
+                                  Obligations:
+                                </Typography>
+                                <List dense>
+                                  {party.obligations.map((obligation, idx) => (
+                                    <ListItem key={idx}>
+                                      <ListItemText 
+                                        primary={
+                                          <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: 1 }}>
+                                            <Typography variant="body2" component="span" sx={{ fontSize: '1rem' }}>•</Typography>
+                                            <Typography variant="body2">{obligation}</Typography>
+                                          </Box>
+                                        } 
+                                      />
+                                    </ListItem>
+                                  ))}
+                                </List>
+                              </Box>
+                            )}
+                            
+                            {party.rights && party.rights.length > 0 && (
+                              <Box sx={{ mt: 1 }}>
+                                <Typography variant="body2" fontWeight={500}>
+                                  Rights:
+                                </Typography>
+                                <List dense>
+                                  {party.rights.map((right, idx) => (
+                                    <ListItem key={idx}>
+                                      <ListItemText 
+                                        primary={
+                                          <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: 1 }}>
+                                            <Typography variant="body2" component="span" sx={{ fontSize: '1rem' }}>•</Typography>
+                                            <Typography variant="body2">{right}</Typography>
+                                          </Box>
+                                        } 
+                                      />
+                                    </ListItem>
+                                  ))}
+                                </List>
+                              </Box>
+                            )}
+                          </CardContent>
+                        </Card>
+                      ))
+                    ) : (
+                      <Typography variant="body2" color="text.secondary">
+                        No parties or obligations identified.
+                      </Typography>
+                    )}
+                  </Box>
+
+                  <Box sx={{ mt: 3 }}>
+                    <Typography variant="body2">
+                      <strong>Processing Time:</strong>{" "}
+                      {parsedSummary.processing_time || "N/A"}
+                    </Typography>
+                  </Box>
+                </Box>
+              ) : (
+                <Typography variant="body2" color="text.secondary">
+                  No summary available.
+                </Typography>
+              )}
+            </CardContent>
+          </Card>
+        </Paper>
+      </Box>
     );
   };
 
   return (
-    <div style={styles.app}>
-      <header style={styles.header}>
-        <h1 style={styles.headerTitle}>Legal Document Analyzer</h1>
-        <p style={styles.headerSubtitle}>
-          Upload a document or paste text for legal analysis
-        </p>
-      </header>
+    <Container maxWidth="lg">
+      <Box sx={{ mt: 3, mb: 4 }}>
+        <Typography variant="h4" component="h1" sx={{ mb: 1 }}>
+          Legal Document Analyzer
+        </Typography>
+        <Typography variant="body1" color="text.secondary">
+          Upload a document or paste text for detailed legal analysis
+        </Typography>
+      </Box>
 
-      <main style={styles.main}>
-        <div style={styles.tabContainer}>
-          <div
-            style={{
-              ...styles.tab,
-              ...(activeTab === "upload" ? styles.activeTab : {}),
-            }}
-            onClick={() => handleTabChange("upload")}
+      <Paper elevation={0} sx={{ 
+        bgcolor: 'background.paper', 
+        border: '1px solid', 
+        borderColor: 'background.subtle',
+        overflow: 'hidden'
+      }}>
+        <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
+          <Tabs
+            value={activeTab}
+            onChange={handleTabChange}
+            aria-label="document analysis tabs"
+            variant="fullWidth"
           >
-            Upload File
-          </div>
-          <div
-            style={{
-              ...styles.tab,
-              ...(activeTab === "paste" ? styles.activeTab : {}),
-            }}
-            onClick={() => handleTabChange("paste")}
-          >
-            Paste Text
-          </div>
-        </div>
+            <Tab label="Upload Document" />
+            <Tab label="Paste Text" />
+          </Tabs>
+        </Box>
 
-        <div style={styles.contentContainer}>
-          {activeTab === "upload" ? (
-            <div style={styles.fileUploadContainer}>
+        <Box sx={{ p: 3 }}>
+          {activeTab === 0 ? (
+            <Box sx={{ 
+              display: 'flex', 
+              flexDirection: 'column', 
+              alignItems: 'center', 
+              py: 4 
+            }}>
               {!file ? (
-                <>
-                  <div style={styles.fileInputWrapper}>
-                    <input
-                      type="file"
-                      id="file-upload"
-                      onChange={handleFileChange}
-                      accept=".txt,.pdf,.docx"
-                      style={styles.fileInput}
-                    />
-                    <label htmlFor="file-upload" style={styles.fileInputLabel}>
-                      <img
-                        src="https://media.lordicon.com/icons/wired/gradient/2-cloud-upload.svg"
-                        alt="Upload Icon"
-                        style={{
-                          width: "60px",
-                          height: "60px",
-                          marginBottom: "10px",
-                        }}
-                      />
-                      <div>
-                        <strong>Click here to upload a file</strong>
-                      </div>
-                    </label>
-                    <p
-                      style={{
-                        color: "#a0a7ad",
-                        fontSize: "0.9rem",
-                        marginTop: "12px",
-                        textAlign: "center",
-                        width: "100%",
-                      }}
-                    >
-                      We support .TXT, .DOCX, and text-based PDFs.
-                    </p>
-                  </div>
-                </>
-              ) : (
-                <div style={styles.uploadPreview}>
-                  <img
-                    src="https://cdn-icons-png.flaticon.com/512/510/510657.png"
-                    alt="Uploaded file icon"
-                    style={styles.uploadIcon}
+                <Box 
+                  component="label" 
+                  htmlFor="file-upload"
+                  sx={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    border: '2px dashed',
+                    borderColor: 'background.subtle',
+                    borderRadius: 2,
+                    p: 6,
+                    width: '100%',
+                    maxWidth: 500,
+                    cursor: 'pointer',
+                    transition: 'all 0.2s',
+                    backgroundColor: 'background.subtle',
+                    '&:hover': {
+                      borderColor: 'primary.main',
+                      backgroundColor: 'background.paper',
+                    }
+                  }}
+                >
+                  <input
+                    type="file"
+                    id="file-upload"
+                    onChange={handleFileChange}
+                    accept=".txt,.pdf,.docx"
+                    style={{ display: 'none' }}
                   />
-                  <span style={styles.uploadFileName}>{file.name}</span>
-                </div>
+                  <CloudUpload sx={{ fontSize: 60, color: 'primary.main', mb: 2 }} />
+                  <Typography variant="body1" fontWeight={500}>
+                    Click here to upload a file
+                  </Typography>
+                  <Typography variant="caption" color="text.secondary" sx={{ mt: 1 }}>
+                    We support .TXT, .DOCX, and text-based PDFs
+                  </Typography>
+                </Box>
+              ) : (
+                <Box sx={{ 
+                  display: 'flex', 
+                  alignItems: 'center', 
+                  justifyContent: 'space-between',
+                  p: 2,
+                  border: '1px solid',
+                  borderColor: 'background.subtle',
+                  borderRadius: 2,
+                  bgcolor: 'background.subtle',
+                  width: '100%',
+                  maxWidth: 500,
+                  mb: 3
+                }}>
+                  <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                    <Description color="primary" sx={{ mr: 2 }} />
+                    <Typography variant="body2">{file.name}</Typography>
+                  </Box>
+                  <IconButton size="small" onClick={() => setFile(null)}>
+                    <Delete fontSize="small" />
+                  </IconButton>
+                </Box>
               )}
 
-              <button
+              <Button
+                variant="contained"
+                color="primary"
                 onClick={analyzeFile}
                 disabled={!file || loading}
-                style={{
-                  ...styles.analyzeButton,
-                  ...(!file || loading ? styles.analyzeButtonDisabled : {}),
-                }}
-                onMouseOver={(e) => {
-                  if (file && !loading) {
-                    e.target.style.backgroundColor = "#303f9f";
-                  }
-                }}
-                onMouseOut={(e) => {
-                  if (file && !loading) {
-                    e.target.style.backgroundColor = "#3f51b5";
-                  }
-                }}
+                startIcon={loading ? <CircularProgress size={20} color="inherit" /> : <Search />}
+                sx={{ mt: 3 }}
               >
                 {loading ? "Analyzing..." : "Analyze Document"}
-              </button>
-            </div>
+              </Button>
+            </Box>
           ) : (
-            <div style={styles.textInputContainer}>
-              <textarea
+            <Box sx={{ py: 2 }}>
+              <TextField
+                fullWidth
                 value={text}
                 onChange={handleTextChange}
                 placeholder="Paste your legal text here..."
-                style={styles.textInput}
+                multiline
                 rows={10}
+                variant="outlined"
+                sx={{ mb: 3 }}
               />
-              <button
-                onClick={analyzeText}
-                disabled={!text.trim() || loading}
-                style={{
-                  ...styles.analyzeButton,
-                  ...(!text.trim() || loading
-                    ? styles.analyzeButtonDisabled
-                    : {}),
-                  margin: "20px auto",
-                  display: "block",
-                }}
-                onMouseOver={(e) => {
-                  if (text.trim() && !loading) {
-                    e.target.style.backgroundColor = "#303f9f";
-                  }
-                }}
-                onMouseOut={(e) => {
-                  if (text.trim() && !loading) {
-                    e.target.style.backgroundColor = "#3f51b5";
-                  }
-                }}
-              >
-                {loading ? "Analyzing..." : "Analyze Text"}
-              </button>
-            </div>
+              <Box sx={{ display: 'flex', justifyContent: 'center' }}>
+                <Button
+                  variant="contained"
+                  color="primary"
+                  onClick={analyzeText}
+                  disabled={!text.trim() || loading}
+                  startIcon={loading ? <CircularProgress size={20} color="inherit" /> : <Search />}
+                >
+                  {loading ? "Analyzing..." : "Analyze Text"}
+                </Button>
+              </Box>
+            </Box>
           )}
 
-          {error && <div style={styles.errorMessage}>{error}</div>}
+          {error && (
+            <Alert severity="error" sx={{ mt: 3 }}>
+              {error}
+            </Alert>
+          )}
 
-          {loading && (
-            <div style={styles.loading}>Processing your document...</div>
+          {loading && !result && (
+            <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column', mt: 4 }}>
+              <CircularProgress size={40} />
+              <Typography variant="body2" color="text.secondary" sx={{ mt: 2 }}>
+                Processing your document...
+              </Typography>
+            </Box>
           )}
 
           {renderResults()}
-        </div>
-      </main>
-
-      <footer style={styles.footer}>
-        <p>Legal Document Analysis System </p>
-      </footer>
-    </div>
+        </Box>
+      </Paper>
+    </Container>
   );
 };
 
