@@ -6,7 +6,7 @@ from dotenv import load_dotenv
 from services.llm_factory import llm
 load_dotenv()
 
-client = llm
+client = Groq(api_key=os.getenv("GROQ_API_KEY"))
 
 def analyze_legal_text_with_llama(text, model="llama3-70b-8192"):
     if len(text.split()) > 1500:

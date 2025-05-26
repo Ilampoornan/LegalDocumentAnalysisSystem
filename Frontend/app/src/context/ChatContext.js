@@ -70,57 +70,108 @@ export const ChatContextProvider = ({ children }) => {
     }
   };
 
-  const sendMessage = async (text, attachment = null) => {
-    try {
-      // Add user message
-      const userMessage = { 
-        id: Date.now(), 
-        text, 
-        isUser: true, 
-        timestamp: new Date().toISOString()
-      };
-      console.log(token);
+  // ...existing code...
+
+const sendMessage = async (text, attachment = null) => {
+  try {
+    // Add user message
+    const userMessage = { 
+      id: Date.now(), 
+      text, 
+      isUser: true, 
+      timestamp: new Date().toISOString()
+    };
+    
+    setMessages(prev => [...prev, userMessage]);
+    setIsLoading(true);
+    
+    // If there's an attachment, upload it first
+    let documentId = null;
+    if (attachment) {
+      const formData = new FormData();
+      formData.append('file', attachment);
       
-      setMessages(prev => [...prev, userMessage]);
-      setIsLoading(true);
-      
-      // Call backend API
-      const response = await fetch(`${API_URL}/chat/ask`, {
+      const uploadResponse = await fetch(`${API_URL}/chat/upload`, {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json',
           'Authorization': `Bearer ${token}`,
         },
-        body: JSON.stringify({ question: text }),
+        body: formData,
       });
       
-      if (!response.ok) {
-        const errorText = await response.text(); // Read raw response text
-  console.error('Backend error response:', errorText); // Log server message
-  throw new Error(`Server responded with status ${response.status}`);
+      if (!uploadResponse.ok) {
+        const errorText = await uploadResponse.text();
+        console.error('Document upload error:', errorText);
+        throw new Error(`Document upload failed with status ${uploadResponse.status}`);
       }
       
-      const data = await response.json();
+      const uploadData = await uploadResponse.json();
+      documentId = uploadData.document_id;
       
-      const botMessage = {
-        id: Date.now() + 1,
-        text: data.response,
+      // Add system message about successful upload
+      const systemMessage = {
+        id: Date.now() + 0.5,
+        text: `Document "${attachment.name}" uploaded successfully. You can now ask questions about it.`,
         isUser: false,
+        isSystem: true,
         timestamp: new Date().toISOString()
       };
       
-      setMessages(prev => [...prev, botMessage]);
-      
-      // Refresh chat history to include new chat
-      fetchChatHistory();
-      
-      setIsLoading(false);
-    } catch (err) {
-      console.error('Error sending message:', err);
-      setError('Failed to get response');
-      setIsLoading(false);
+      setMessages(prev => [...prev, systemMessage]);
     }
-  };
+    
+    // Now send the actual query, including document_id if available
+    const queryBody = documentId 
+      ? { question: text, document_id: documentId }
+      : { question: text };
+    
+    const response = await fetch(`${API_URL}/chat/ask`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`,
+      },
+      body: JSON.stringify(queryBody),
+    });
+    
+    if (!response.ok) {
+      const errorText = await response.text();
+      console.error('Backend error response:', errorText);
+      throw new Error(`Server responded with status ${response.status}`);
+    }
+    
+    const data = await response.json();
+    
+    const botMessage = {
+      id: Date.now() + 1,
+      text: data.response,
+      isUser: false,
+      timestamp: new Date().toISOString()
+    };
+    
+    setMessages(prev => [...prev, botMessage]);
+    
+    // Refresh chat history to include new chat
+    fetchChatHistory();
+    
+    setIsLoading(false);
+  } catch (err) {
+    console.error('Error sending message:', err);
+    
+    // Add error message to chat
+    const errorMessage = {
+      id: Date.now() + 1,
+      text: `Error: ${err.message || 'Failed to get response'}`,
+      isUser: false,
+      isError: true,
+      timestamp: new Date().toISOString()
+    };
+    
+    setMessages(prev => [...prev, errorMessage]);
+    setError('Failed to get response');
+    setIsLoading(false);
+  }
+};
   
   const clearChat = () => setMessages([]);
 

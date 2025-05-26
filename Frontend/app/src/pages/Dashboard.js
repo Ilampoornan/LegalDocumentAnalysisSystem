@@ -126,6 +126,7 @@ const Dashboard = () => {
                   variant="outlined" 
                   fullWidth
                   startIcon={<InsertDriveFile />}
+                  onClick={() => navigate('/predict-case')}
                   sx={{ p: 1.5, height: '100%' }}
                 >
                   Predict Case
