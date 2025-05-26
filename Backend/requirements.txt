@@ -144,7 +144,6 @@ pytest==8.3.5
 python-dateutil==2.9.0.post0
 python-dotenv==1.1.0
 pyunormalize==16.0.0
-pywin32==310
 PyYAML==6.0.2
 pyzmq==26.4.0
 referencing==0.36.2
